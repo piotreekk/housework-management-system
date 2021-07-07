@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>MedicSystem - Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Wystąpił błąd aplikacji</h4>
+        <div style="margin-top: 30px; margin-bottom: 30px">
+            <table>
+                <tr>
+                    <td class="text-right" style="padding-right: 30px"><b>Unikalny identyfikator błędu:</b></td>
+                    <td th:text="${exception.message}"></td>
+                </tr>
+                <tr th:if="${exception.errorCode != null}">
+                    <td class="text-right" style="padding-right: 30px"><b>Szczegóły:</b></td>
+                    <td th:text="${exception.errorCode.provideMessage()}"></td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 30px"><b>Adres URL:</b></td>
+                    <td th:text="${url}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

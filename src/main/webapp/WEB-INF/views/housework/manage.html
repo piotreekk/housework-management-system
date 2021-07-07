@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Tenants - House owner dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:object="${houseworkForm}" th:action="@{/housework}" th:method="POST">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary" sec:authorize="hasAuthority('ADMIN')"
+                        name="action" th:value="${houseworkForm.id != null ? 'update' : 'save'}">
+                    Zapisz
+                </button>
+                <a class="btn btn-success" th:if="${houseworkForm.status == 'TO_DO'}"
+                   th:href="@{/housework/{id}/assign(id=${houseworkForm.id})}">
+                    <i class="fa fa-check-circle"></i> Przypisz do mnie
+                </a>
+                <a class="btn btn-danger" th:if="${houseworkForm.status == 'IN_PROGRESS'}"
+                   th:href="@{/housework/{id}/resign(id=${houseworkForm.id})}">
+                    <i class="fa fa-times-circle"></i> Odepnij się
+                </a>
+                <a class="btn btn-info" th:if="${houseworkForm.status== 'IN_PROGRESS'}"
+                   th:href="@{/housework/{id}/finish(id=${houseworkForm.id})}">
+                    <i class="fa fa-check-circle"></i> Wykonaj
+                </a>
+                <a class="btn btn-secondary" th:href="@{/house/{id}/houseworks(id=${houseId})}">
+                    <i class="fa fa-arrow-left"></i> Powrót
+                </a>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col">
+                <div class="card mb-3">
+                    <div class="card-header"
+                         th:text="${houseworkForm.id == null ? 'Dodawanie nowego zadania' : 'Zadanie: ' + houseworkForm.name}">
+                    </div>
+                    <div class="card-body">
+                        <p class="alert alert-danger" th:if="${#fields.hasErrors('*')}">Formularz zawiera błędy!</p>
+                        <div class="col-md-6">
+                            <input type="hidden" th:field="*{id}"/>
+                            <div class="form-group">
+                                <label for="name">Nazwa</label>
+                                <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Nazwa"
+                                       th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                                <p style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Opis</label>
+                                <textarea th:field="*{description}" class="form-control" id="description"
+                                          placeholder="Opis"
+                                          th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                                </textarea>
+                                <p style="color: red" th:if="${#fields.hasErrors('description')}"
+                                   th:errors="*{description}">
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduledAt">Planowana data wykonania zadania</label>
+                                <input th:field="*{scheduledAt}" type="date" class="form-control" id="scheduledAt"
+                                       placeholder="Planowana data wykonania zadania"
+                                       th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                                <p style="color: red" th:if="${#fields.hasErrors('scheduledAt')}"
+                                   th:errors="*{scheduledAt}">
+                            </div>
+                            <input type="hidden" name="houseId" th:value="${houseId}"/>
+                            <div class="form-group" th:if="${houseworkForm.status == 'FINISHED'}" >
+                                <label for="finishedAt">Wykonano</label>
+                                <input th:field="*{finishedAt}" type="datetime-local" class="form-control"
+                                       id="finishedAt" disabled="disabled">
+                            </div>
+                            <div class="form-group" th:if="${houseworkForm.status == 'FINISHED'}">
+                                <label for="executorComment">Komentarz wykonującego</label>
+                                <textarea th:field="*{executorComment}" class="form-control" id="executorComment"
+                                          disabled="disabled">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

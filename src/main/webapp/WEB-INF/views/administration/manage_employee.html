@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>MedicSystem - Zarządzanie kontami pracowników</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <form th:object="${employee}" th:action="@{/administracja/pracownicy/pracownik}" th:method="POST">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3">
+                <button class="btn btn-primary" name="action" th:value="${employee.id != null ? 'update' : 'save'}">
+                    Zapisz
+                </button>
+                <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#disableAccountModal" th:if="${employee.id != null}">Deaktywuj</a>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header"
+                 th:text="${employee.id != null ? employee.firstName + ' ' + employee.lastName : 'Nowy pracownik'}">
+                Imie Nazwisko Pracownika
+            </div>
+            <div class="card-body">
+                <p class="alert alert-danger" th:if="${#fields.hasErrors('*')}">Formularz zawiera błędy!</p>
+                <div class="col-md-6">
+                    <input th:field="*{id}" type="hidden">
+                    <input th:field="*{userAccountId}" type="hidden">
+                    <div class="form-group">
+                        <label for="first_name">Imię</label>
+                        <input th:field="*{firstName}" type="text" class="form-control" id="first_name"
+                               placeholder="Imię">
+                        <p style="color: red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Nazwisko</label>
+                        <input th:field="*{lastName}" type="text" class="form-control" id="last_name"
+                               placeholder="Nazwisko">
+                        <p style="color: red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                    </div>
+                    <div class="form-group">
+                        <label for="login">Login</label>
+                        <input th:field="*{login}" type="text" class="form-control" id="login" placeholder="Login" th:readonly="${employee.id != null}">
+                        <p style="color: red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input th:field="*{email}" type="email" class="form-control" id="email" placeholder="email">
+                        <p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Stanowisko</label>
+                        <select th:field="*{position}" class="form-control" id="position" name="position">
+                            <option th:each="position : ${T(com.medic.system.entity.Position).values()}"
+                                    th:value="${position}" th:text="#{'employee.position.' + ${position}}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="authorities">Authorities</label>
+                        <select class="form-control" id="authorities" name="authorities"
+                                th:field="*{authorities}" multiple>
+                            <option th:each="authority : ${@authorityRepository.findAll()}"
+                                    th:text="${authority.description}" th:value="${authority.name}"></option>
+                        </select>
+                        <p style="color: red" th:if="${#fields.hasErrors('authorities')}"
+                           th:errors="*{authorities}">
+                    </div>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+        </div>
+        <!--delete employee modal-->
+        <div class="modal fade" id="disableAccountModal" tabindex="-1" role="dialog" aria-labelledby="disableAccountHeader"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="disableAccountHeader">Czy na pewno chcesz deaktywować konto użytkownika?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger" name="action" value="delete">Deaktywuj konto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

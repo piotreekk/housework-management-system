@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>MedicSystem - Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Icon Cards-->
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="/administracja/pracownicy/lekarz/nowy">
+                <i class="fa fa-userAccount-md" ></i> Dodaj nowego lekarza
+            </a>
+            <a class="btn btn-primary" href="/administracja/pracownicy/pracownik/nowy">
+                <i class="fa fa-userAccount"></i> Dodaj nowego pracownika
+            </a>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+        <div class="col">
+            <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Lista pracowników przychodni
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Login</th>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Position</th>
+                            <th>Konto aktywne</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Login</th>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Position</th>
+                            <th>Konto aktywne</th>
+                            <th></th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr th:each="employee : ${employees}">
+                            <td th:text="${employee.login}"></td>
+                            <td th:text="${employee.firstName}"></td>
+                            <td th:text="${employee.lastName}"></td>
+                            <td th:text="#{'employee.position.' + ${employee.position}}"></td>
+                            <td th:text="${employee.accountActive ? 'TAK' : 'NIE'}"></td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" th:if="${employee.position == 'DOCTOR'}"
+                                   th:href="@{/administracja/pracownicy/lekarz/{id}/edytuj(id = ${employee.id})}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="btn btn-primary btn-sm" th:if="${employee.position != 'DOCTOR'}"
+                                   th:href="@{/administracja/pracownicy/pracownik/{id}/edytuj(id = ${employee.id})}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Tenants - House owner dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:object="${houseForm}" th:action="@{/house}" th:method="POST">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary" name="action" th:value="${houseForm.id != null ? 'update' : 'save'}"
+                        sec:authorize="hasAuthority('ADMIN')">Zapisz
+                </button>
+                <a class="btn btn-warning" th:if="${houseForm.id != null}"
+                   th:href="@{/house/{id}/houseworks(id=${houseForm.id})}">
+                    <i class="fa fa-broom"></i> Obowiązki domowe
+                </a>
+                <a class="btn btn-warning" th:if="${houseForm.id != null}"
+                   th:href="@{/house/{id}/inhabitants(id=${houseForm.id})}">
+                    <i class="fa fa-broom"></i> Mieszkańcy
+                </a>
+                <a class="btn btn-secondary" href="/house"><i class="fa fa-arrow-left"></i> Powrót</a>
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="col">
+                <div class="card mb-3">
+                    <div class="card-header"
+                         th:text="${houseForm.id == null ? 'Dodawanie nowego mieszkania' : 'Mieszkanie: ' + houseForm.name}">
+                    </div>
+                    <div class="card-body">
+                        <p class="alert alert-danger" th:if="${#fields.hasErrors('*')}">Formularz zawiera błędy!</p>
+                        <div class="col-md-6">
+                            <input type="hidden" th:field="*{id}"/>
+                            <div class="form-group">
+                                <label for="name">Nazwa</label>
+                                <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Nazwa"
+                                       th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                                <p style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Opis</label>
+                                <textarea th:field="*{description}" class="form-control" id="description"
+                                          placeholder="Opis"
+                                          th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                        </textarea>
+                                <p style="color: red" th:if="${#fields.hasErrors('description')}"
+                                   th:errors="*{description}">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Adres</label>
+                                <textarea th:field="*{addressLine1}" class="form-control" id="addressLine1"
+                                          placeholder="Adres"
+                                          th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                        </textarea>
+                                <p style="color: red" th:if="${#fields.hasErrors('addressLine1')}"
+                                   th:errors="*{addressLine1}">
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Adres cd.</label>
+                                <textarea th:field="*{addressLine2}" class="form-control" id="addressLine2"
+                                          placeholder="Adres cd."
+                                          th:disabled="!${#authorization.expression('hasAuthority(''ADMIN'')')}">
+                        </textarea>
+                                <p style="color: red" th:if="${#fields.hasErrors('addressLine2')}"
+                                   th:errors="*{addressLine2}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+</body>
+</html>
