@@ -20,7 +20,9 @@ public interface UserAccountRepository extends CrudRepository<UserAccount, Long>
 
     @Query("SELECT u FROM UserAccount u LEFT JOIN u.houses h " +
             "WHERE h IS NULL " +
-            "OR h.house.id <> :houseId " +
+            "OR NOT EXISTS(" +
+            "   SELECT h1 FROM HouseInhabitant h1 WHERE h1.house.id = :houseId AND h1.user.id = h.user.id" +
+            ") " +
             "OR EXISTS (" +
             "   SELECT COUNT(h2) FROM HouseInhabitant h2 WHERE h2.house.id = :houseId AND h2.user.id = h.user.id " +
             "   GROUP BY h2.house, h2.user HAVING MAX(COALESCE(h2.dateTo, CURRENT_DATE + 1)) <= CURRENT_DATE" +

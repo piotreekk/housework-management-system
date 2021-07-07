@@ -62,6 +62,10 @@ public class Housework extends BaseEntity {
     }
 
     public void update(String name, String description, LocalDate scheduledAt) {
+        ExceptionUtils.notBlank(name, "SCIN_PS_20210707224854");
+        ExceptionUtils.notBlank(description, "SCIN_PS_20210707224902");
+        ExceptionUtils.notNull(scheduledAt, "SCIN_PS_20210707224913");
+
         if (this.status != HouseworkStatus.TO_DO)
             ExceptionUtils.throwAppBusinessException("SCIN_PS_20210705223208", HouseworkErrorCode.HOUSEWORK_NOT_TO_DO);
 
